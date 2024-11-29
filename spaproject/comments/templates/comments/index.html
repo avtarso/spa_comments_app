@@ -12,10 +12,18 @@
     <h1>Comments</h1>
     <ul id="comments"></ul>
     <form id="commentForm">
-        <input type="text" id="commentUser_name" placeholder="User name" required><br />
-        <input type="text" id="commentE_mail" placeholder="E-mail" required><br />
-        <input type="text" id="commentHome_page" placeholder="Home page"><br />
-        <input type="text" id="commentText" placeholder="Text" required><br />
+        {% csrf_token %}
+        <input type="text" id="commentUser_name" placeholder="User name (required)" required><br />
+        <input type="text" id="commentE_mail" placeholder="E-mail (required)" required><br />
+        <input type="text" id="commentHome_page" placeholder="Home page (optional)"><br />
+        <input type="text" id="commentText" placeholder="Comment Text (required)" required><br />
+
+        <img id="captchaImage" src="" alt="Captcha" />
+        <button type="button" id="refreshCaptcha">Refresh Captcha</button>
+        <br />
+        <input type="text" id="captchaAnswer" placeholder="Enter captcha (required)" required><br />
+        <input type="hidden" id="captchaKey">
+
         <button type="submit">Add Comment</button>
     </form>
 </body>
