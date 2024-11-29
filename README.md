@@ -1,2 +1,2 @@
-# spa_comments_app
-SPA comments app
+# spa_comments
+SPA app for comments

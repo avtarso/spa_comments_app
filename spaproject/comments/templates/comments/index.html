@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPA Comments</title>
+    <script defer src="{% static 'comments/script.js' %}"></script>
+    <link rel="icon" href="{% static 'comments/favicon.ico' %}">
+</head>
+<body>
+    <h1>Comments</h1>
+    <ul id="comments"></ul>
+    <form id="commentForm">
+        <input type="text" id="commentUser_name" placeholder="User name" required><br />
+        <input type="text" id="commentE_mail" placeholder="E-mail" required><br />
+        <input type="text" id="commentHome_page" placeholder="Home page"><br />
+        <input type="text" id="commentText" placeholder="Text" required><br />
+        <button type="submit">Add Comment</button>
+    </form>
+</body>
+</html>
