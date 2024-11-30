@@ -143,8 +143,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 #     }
 # }
 
-REDIS_URL = f"{os.getenv('REDIS_PRIVATE_URL', 'redis://127.0.0.1:6379/1')}/0" 
+REDIS_URL = f"{os.getenv('REDIS_PUBLIC_URL', 'redis://127.0.0.1:6379/1')}/0" 
 # если переменная не задана, использовать 'redis://127.0.0.1:6379/1'
+
+print(REDIS_URL)
 
 CACHES = {
     'default': {
