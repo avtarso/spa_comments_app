@@ -3,6 +3,8 @@ import random
 import string
 import io
 from django.core.cache import cache
+from django.conf import settings
+import os
 
 CAPTCHA_EXPIRATION_TIME = 300  # Срок действия капчи (в секундах)
 
@@ -18,7 +20,7 @@ def generate_captcha():
     image_width, image_height = 40, 20
     background_color = (0, 0, 0)
     text_color = (255, 255, 255)
-    font_path = "/static/comments/FreeMonoBold.ttf" 
+    font_path = os.path.join(settings.STATIC_ROOT, 'FreeMonoBold.ttf')
     
     image = Image.new('RGB', (image_width, image_height), background_color)
     draw = ImageDraw.Draw(image)
