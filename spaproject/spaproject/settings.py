@@ -131,27 +131,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-# Redis
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379/1",  # URL Redis-сервера
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     }
-# }
-
-REDIS_URL = f"{os.getenv('REDIS_PUBLIC_URL', 'redis://127.0.0.1:6379/1')}/0" 
-# если переменная не задана, использовать 'redis://127.0.0.1:6379/1'
-
-print(REDIS_URL)
-
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': REDIS_URL,
+        'LOCATION': f"{os.getenv('REDIS_PUBLIC_URL', 'redis://127.0.0.1:6379/1')}/0",
+        # если переменная не задана, использовать 'redis://127.0.0.1:6379/1'
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
