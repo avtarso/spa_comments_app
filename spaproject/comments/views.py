@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import Comment
 from .serializers import CommentSerializer
 
+
 class CommentsListCreateView(APIView):
     def get(self, request):
         comments = Comment.objects.all()

@@ -7,7 +7,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const commentHome_page = document.getElementById('commentHome_page');
     const commentText = document.getElementById('commentText');
 
-    // Получение комментариев
+    const captchaImage = document.getElementById('captchaImage');
+    const refreshCaptcha = document.getElementById('refreshCaptcha');
+    const captchaAnswer = document.getElementById('captchaAnswer');
+    const captchaKeyInput = document.getElementById('captchaKey');
+
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+    const getHeadersWithCSRF = () => ({
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+    });
+
+    const loadCaptcha = async () => {
+        try {
+            const response = await fetch('/api/get-captcha/');
+            if (!response.ok) throw new Error('Ошибка при загрузке капчи 1');
+            const captchaKey = response.headers.get('Captcha-Key');
+            const blob = await response.blob();
+            const captchaUrl = URL.createObjectURL(blob);
+            captchaImage.src = captchaUrl;
+            captchaKeyInput.value = captchaKey;
+         } catch (error) {
+            alert('Ошибка при загрузке капчи 2');
+        }
+    };
+
     const fetchComments = async () => {
         try {
             const response = await fetch('/api/comments/');
@@ -20,44 +45,64 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentsList.appendChild(li);
             });
         } catch (error) {
-            console.error(error);
             commentsList.innerHTML = '<li>Не удалось загрузить комментарии</li>';
         }
     };
 
-    // Добавление комментария
     commentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Проверка обязательных полей
-        if (!commentUser_name.value || !commentE_mail.value || !commentText.value) {
+        if (!commentUser_name.value || !commentE_mail.value || !commentText.value || !captchaAnswer.value) {
             alert('Пожалуйста, заполните обязательные поля!');
             return;
         }
 
-        const response = await fetch('/api/comments/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                user_name: commentUser_name.value,
-                e_mail: commentE_mail.value,
-                home_page: commentHome_page.value || null, // Пустое значение передаём как null
-                text: commentText.value,
-            }),
-        });
+        try {
+            const captchaResponse = await fetch('/api/verify-captcha/', {
+                method: 'POST',
+                headers: getHeadersWithCSRF(),
+                body: JSON.stringify({
+                    captcha_key: captchaKey.value,
+                    captcha_value: captchaAnswer.value,
+                }),
+            });
 
-        if (response.ok) {
-            commentUser_name.value = '';
-            commentE_mail.value = '';
-            commentHome_page.value = '';
-            commentText.value = '';
-            fetchComments();
-        } else {
-            alert('Ошибка при добавлении комментария');
+            const captchaResult = await captchaResponse.json();
+            if (!captchaResult.success) {
+                alert('Неверная капча!');
+                loadCaptcha();
+                return;
+            }
+
+            const response = await fetch('/api/comments/', {
+                method: 'POST',
+                headers: getHeadersWithCSRF(),
+                body: JSON.stringify({
+                    user_name: commentUser_name.value,
+                    e_mail: commentE_mail.value,
+                    home_page: commentHome_page.value || null,
+                    text: commentText.value,
+                }),
+            });
+
+            if (response.ok) {
+                commentUser_name.value = '';
+                commentE_mail.value = '';
+                commentHome_page.value = '';
+                commentText.value = '';
+                captchaAnswer.value = '';
+                fetchComments();
+                loadCaptcha();
+            } else {
+                throw new Error('Ошибка при добавлении комментария');
+            }
+        } catch (error) {
+            alert(error.message);
         }
     });
 
+    refreshCaptcha.addEventListener('click', loadCaptcha);
+
     fetchComments();
+    loadCaptcha();
 });

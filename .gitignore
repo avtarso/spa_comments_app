@@ -2,6 +2,6 @@ spa
 spa/
 __pycache__
 __pycache__/
-migrations
-migrations/
+**/migrations/*.py
+!**/migrations/__init__.py
 spaproject/db.sqlite3
