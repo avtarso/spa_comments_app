@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-erjo&fje353--ws6)q%6yl900k&yzm_$!_15!ong5kgmb2+a-e
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "spa.up.railway.app",
+    "harmonious-rebirth-production.up.railway.app",
     "localhost",
     "127.0.0.1",
 ]
