@@ -11,7 +11,6 @@ def get_captcha(request):
     captcha_key, captcha_image = generate_captcha()
     response = HttpResponse(captcha_image, content_type="image/png")
     response['Captcha-Key'] = captcha_key
-    print(captcha_key)
     return response
 
 @csrf_exempt
