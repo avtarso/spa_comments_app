@@ -18,7 +18,7 @@ def generate_captcha():
     image_width, image_height = 40, 20
     background_color = (0, 0, 0)
     text_color = (255, 255, 255)
-    font_path = "/static/comments/FreeMonoBold.ttf" 
+    font_path = "/static/FreeMonoBold.ttf" 
     
     image = Image.new('RGB', (image_width, image_height), background_color)
     draw = ImageDraw.Draw(image)
