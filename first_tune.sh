@@ -1,6 +1,6 @@
 # !/bin/bash
 
-# script for run in VSCode
+# script for initial environment setup
 # chmod +x first_tune.sh && ./first_tune.sh
 
 python3 -m venv spa && source spa/bin/activate

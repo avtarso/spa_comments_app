@@ -1,4 +1,5 @@
 #!/bin/bash
+# script for running on hosting
 
 cd spaproject
 python manage.py collectstatic --noinput
