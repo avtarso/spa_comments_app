@@ -1,6 +1,4 @@
 #!/bin/bash
-# chmod +x start.sh
-# ./start.sh
 
 cd spaproject
 python manage.py collectstatic --noinput
