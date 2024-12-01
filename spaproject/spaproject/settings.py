@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "harmonious-rebirth-production.up.railway.app",
+    "spacommentsapp-production.up.railway.app",
+    "spa.up.railway.app",
     "localhost",
     "127.0.0.1",
 ]
