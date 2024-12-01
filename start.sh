@@ -1,6 +1,5 @@
 #!/bin/bash
-# chmod +x start.sh
-# ./start.sh
+# script for running on hosting
 
 cd spaproject
 python manage.py collectstatic --noinput
