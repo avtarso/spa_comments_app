@@ -63,6 +63,18 @@ document.addEventListener('DOMContentLoaded', () => {
     commentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const usernameRegex = /^[a-zA-Z0-9]+$/;
+        if (!usernameRegex.test(commentUser_name.value)) {
+            alert('Имя пользователя может содержать только латинские буквы и цифры!');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(commentE_mail.value)) {
+            alert('Введите корректный адрес электронной почты!');
+            return;
+        }
+
         if (quill.root.innerHTML != '<p><br></p>') {
             commentText.value = quill.root.innerHTML; 
         }
