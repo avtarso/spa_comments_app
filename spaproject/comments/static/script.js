@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
+    const socket = new WebSocket('ws://127.0.0.1:8000/ws/comments/');
+
     const getHeadersWithCSRF = () => ({
         'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken,
@@ -48,6 +50,19 @@ document.addEventListener('DOMContentLoaded', () => {
             commentsList.innerHTML = '<li>Не удалось загрузить комментарии</li>';
         }
     };
+
+    socket.onopen = () => {
+        console.log("WebSocket соединение установлено");
+    };
+
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        const comment = data.message;
+        const li = document.createElement('li');
+        li.textContent = `${comment.user_name} - ${comment.text}`;
+        document.getElementById('comments').appendChild(li);
+    };
+
 
     commentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
