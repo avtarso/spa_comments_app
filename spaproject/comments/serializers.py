@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Comment
 
 
-ALLOWED_TAGS = ['a', 'code', 'i', 'strong']
+ALLOWED_TAGS = ['a', 'code', 'i', 'strong', 'p']
 ALLOWED_TAGS_ATTRIBUTES = {'a': ['href', 'title']}
 
 

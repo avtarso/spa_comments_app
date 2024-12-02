@@ -14,6 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
+    const quill = new Quill('#commentTextEditor', {
+        theme: 'snow',
+        placeholder: 'Write your comment...',
+        modules: {
+            toolbar: [
+                ['link', 'code', 'italic', 'bold']
+            ]
+        }
+    });
+
     const getHeadersWithCSRF = () => ({
         'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken,
@@ -53,6 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
     commentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        if (quill.root.innerHTML != '<p><br></p>') {
+            commentText.value = quill.root.innerHTML; 
+        }
+
         if (!commentUser_name.value || !commentE_mail.value || !commentText.value || !captchaAnswer.value) {
             alert('Пожалуйста, заполните обязательные поля!');
             return;
@@ -91,7 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentE_mail.value = '';
                 commentHome_page.value = '';
                 commentText.value = '';
+                quill.root.innerHTML = '';
                 captchaAnswer.value = '';
+
                 fetchComments();
                 loadCaptcha();
             } else {

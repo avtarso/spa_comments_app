@@ -7,6 +7,8 @@
     <title>SPA Comments</title>
     <script defer src="{% static 'script.js' %}"></script>
     <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 </head>
 <body>
     <h1>Comments</h1>
@@ -16,7 +18,9 @@
         <input type="text" id="commentUser_name" placeholder="User name (required)" required><br />
         <input type="text" id="commentE_mail" placeholder="E-mail (required)" required><br />
         <input type="text" id="commentHome_page" placeholder="Home page (optional)"><br />
-        <input type="text" id="commentText" placeholder="Comment Text (required)" required><br />
+        {% comment %} <input type="text" id="commentText" placeholder="Comment Text (required)" required><br /> {% endcomment %}
+        <div id="commentTextEditor"></div>
+        <input type="hidden" id="commentText" name="commentText">
 
         <img id="captchaImage" src="" alt="Captcha" />
         <button type="button" id="refreshCaptcha">Refresh Captcha</button>
