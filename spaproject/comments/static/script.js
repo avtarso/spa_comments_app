@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
             commentsList.innerHTML = '';
             comments.forEach(comment => {
                 const li = document.createElement('li');
-                li.textContent = `${comment.user_name} - ${comment.text}`;
+                // li.textContent = `${comment.user_name} - ${comment.text}`;
+                li.innerHTML = `${comment.user_name} - ${comment.text}`;
                 commentsList.appendChild(li);
             });
         } catch (error) {
