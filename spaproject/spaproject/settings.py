@@ -137,21 +137,26 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f"{os.getenv('REDIS_PUBLIC_URL', 'redis://127.0.0.1:6379/1')}/0",
-        # если переменная не задана, использовать 'redis://127.0.0.1:6379/1'
+        'LOCATION': f"{os.getenv('REDIS_PUBLIC_URL', 'redis://127.0.0.1:6379')}/0",
+        # если переменная не задана, использовать 'redis://127.0.0.1:6379'
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
 }
 
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels.layers.InMemoryChannelLayer',  # для тестирования
+#     },
+# }
+
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',  # для тестирования
-        # Для продакшена использовать Redis:
-        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        # 'CONFIG': {
-        #     "hosts": [('127.0.0.1', 6379)],  # Настройки вашего Redis-сервера
-        # },
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [f"{os.getenv('REDIS_PUBLIC_URL', 'redis://127.0.0.1:6379')}/1"],
+            # если переменная не задана, использовать 'redis://127.0.0.1:6379'
+        },
     },
 }
