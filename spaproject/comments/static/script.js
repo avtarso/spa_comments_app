@@ -14,7 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
-    const socket = new WebSocket('wss://127.0.0.1:8000/ws/comments/');
+    const socket = new WebSocket(
+        window.location.protocol === 'https:' 
+            ? 'wss://harmonious-rebirth-production.up.railway.app/ws/comments/'           
+            : 'ws://127.0.0.1:8000/ws/comments/'
+    );
 
     const getHeadersWithCSRF = () => ({
         'Content-Type': 'application/json',
