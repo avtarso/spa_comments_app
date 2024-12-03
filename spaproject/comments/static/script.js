@@ -14,6 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
+    const quill = new Quill('#commentTextEditor', {
+        theme: 'snow',
+        placeholder: 'Write your comment...',
+        modules: {
+            toolbar: [
+                ['link', 'code', 'italic', 'bold']
+            ]
+        }
+    });
+
     const getHeadersWithCSRF = () => ({
         'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken,
@@ -41,7 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
             commentsList.innerHTML = '';
             comments.forEach(comment => {
                 const li = document.createElement('li');
-                li.textContent = `${comment.user_name} - ${comment.text}`;
+                // li.textContent = `${comment.user_name} - ${comment.text}`;
+                li.innerHTML = `${comment.user_name} - ${comment.text}`;
                 commentsList.appendChild(li);
             });
         } catch (error) {
@@ -51,6 +62,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     commentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        const usernameRegex = /^[a-zA-Z0-9]+$/;
+        if (!usernameRegex.test(commentUser_name.value)) {
+            alert('Имя пользователя может содержать только латинские буквы и цифры!');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(commentE_mail.value)) {
+            alert('Введите корректный адрес электронной почты!');
+            return;
+        }
+
+        if (quill.root.innerHTML != '<p><br></p>') {
+            commentText.value = quill.root.innerHTML; 
+        }
 
         if (!commentUser_name.value || !commentE_mail.value || !commentText.value || !captchaAnswer.value) {
             alert('Пожалуйста, заполните обязательные поля!');
@@ -90,14 +117,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentE_mail.value = '';
                 commentHome_page.value = '';
                 commentText.value = '';
+                quill.root.innerHTML = '';
                 captchaAnswer.value = '';
+
                 fetchComments();
                 loadCaptcha();
             } else {
-                throw new Error('Ошибка при добавлении комментария');
+                // Обработка ошибок от сервера
+                const errorData = await response.json();
+                // console.log(errorData);
+                if (errorData && typeof errorData === 'object') {
+                    const errorMessages = Object.entries(errorData)
+                        .map(([field, messages]) => `${messages.join(', ')}`)
+                        .join('\n');
+                    alert(`Ошибка при добавлении комментария:\n${errorMessages}`);
+                    captchaAnswer.value = '';
+                    loadCaptcha();
+                } else {
+                    throw new Error('Ошибка при добавлении комментария');
+                }
             }
         } catch (error) {
             alert(error.message);
+            captchaAnswer.value = '';
         }
     });
 

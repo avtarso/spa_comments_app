@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPA Comments</title>
     <script defer src="{% static 'script.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
     <link rel="icon" href="{% static 'favicon.ico' %}">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
 </head>
 <body>
     <h1>Comments</h1>
@@ -16,7 +19,9 @@
         <input type="text" id="commentUser_name" placeholder="User name (required)" required><br />
         <input type="text" id="commentE_mail" placeholder="E-mail (required)" required><br />
         <input type="text" id="commentHome_page" placeholder="Home page (optional)"><br />
-        <input type="text" id="commentText" placeholder="Comment Text (required)" required><br />
+        {% comment %} <input type="text" id="commentText" placeholder="Comment Text (required)" required><br /> {% endcomment %}
+        <div id="commentTextEditor"></div>
+        <input type="hidden" id="commentText" name="commentText">
 
         <img id="captchaImage" src="" alt="Captcha" />
         <button type="button" id="refreshCaptcha">Refresh Captcha</button>
