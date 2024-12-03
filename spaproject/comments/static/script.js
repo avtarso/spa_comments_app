@@ -24,12 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const socket = new WebSocket(
-        window.location.protocol === 'https:' 
-            ? 'wss://harmonious-rebirth-production.up.railway.app/ws/comments/'           
-            : 'ws://127.0.0.1:8000/ws/comments/'
-    );
-
     const getHeadersWithCSRF = () => ({
         'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken,
@@ -65,19 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
             commentsList.innerHTML = '<li>Не удалось загрузить комментарии</li>';
         }
     };
-
-    socket.onopen = () => {
-        console.log("WebSocket соединение установлено");
-    };
-
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-        const comment = data.message;
-        const li = document.createElement('li');
-        li.textContent = `${comment.user_name} - ${comment.text}`;
-        document.getElementById('comments').appendChild(li);
-    };
-
 
     commentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
