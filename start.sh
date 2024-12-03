@@ -5,4 +5,4 @@ cd spaproject
 python manage.py collectstatic --noinput
 python manage.py makemigrations
 python manage.py migrate
-daphne spaproject.asgi:application
+daphne -b 0.0.0.0 -p $PORT spaproject.asgi:application
