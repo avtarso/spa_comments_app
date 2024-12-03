@@ -123,10 +123,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchComments();
                 loadCaptcha();
             } else {
-                throw new Error('Ошибка при добавлении комментария');
+                // Обработка ошибок от сервера
+                const errorData = await response.json();
+                // console.log(errorData);
+                if (errorData && typeof errorData === 'object') {
+                    const errorMessages = Object.entries(errorData)
+                        .map(([field, messages]) => `${messages.join(', ')}`)
+                        .join('\n');
+                    alert(`Ошибка при добавлении комментария:\n${errorMessages}`);
+                    captchaAnswer.value = '';
+                    loadCaptcha();
+                } else {
+                    throw new Error('Ошибка при добавлении комментария');
+                }
             }
         } catch (error) {
             alert(error.message);
+            captchaAnswer.value = '';
         }
     });
 
