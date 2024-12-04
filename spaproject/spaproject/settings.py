@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "comments",
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "spaproject.urls"
@@ -76,7 +78,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "spaproject.wsgi.application"
-
+ASGI_APPLICATION = 'spaproject.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -135,10 +137,26 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f"{os.getenv('REDIS_PUBLIC_URL', 'redis://127.0.0.1:6379/1')}/0",
-        # если переменная не задана, использовать 'redis://127.0.0.1:6379/1'
+        'LOCATION': f"{os.getenv('REDIS_PUBLIC_URL', 'redis://127.0.0.1:6379')}/0",
+        # если переменная не задана, использовать 'redis://127.0.0.1:6379'
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
+}
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels.layers.InMemoryChannelLayer',  # для тестирования
+#     },
+# }
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [f"{os.getenv('REDIS_PUBLIC_URL', 'redis://127.0.0.1:6379')}/1"],
+            # если переменная не задана, использовать 'redis://127.0.0.1:6379'
+        },
+    },
 }

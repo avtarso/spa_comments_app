@@ -14,6 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
+    const socket = new WebSocket(
+        window.location.protocol === 'https:' 
+            ? (window.location.hostname === 'spa.up.railway.app'
+                ? 'wss://spa.up.railway.app/ws/comments/'
+                : 'wss://harmonious-rebirth-production.up.railway.app/ws/comments/'
+            )
+            : 'ws://127.0.0.1:8000/ws/comments/'
+    );
+
     const quill = new Quill('#commentTextEditor', {
         theme: 'snow',
         placeholder: 'Write your comment...',
@@ -60,6 +69,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    socket.onopen = () => {
+        console.log("WebSocket соединение установлено");
+    };
+
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        const comment = data.message;
+        const li = document.createElement('li');
+        li.innerHTML = `${comment.user_name} - ${comment.text}`;
+        document.getElementById('comments').appendChild(li);
+    };
+
+
     commentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -77,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (quill.root.innerHTML != '<p><br></p>') {
             commentText.value = quill.root.innerHTML; 
-        }
+        }        
 
         if (!commentUser_name.value || !commentE_mail.value || !commentText.value || !captchaAnswer.value) {
             alert('Пожалуйста, заполните обязательные поля!');
@@ -119,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentText.value = '';
                 quill.root.innerHTML = '';
                 captchaAnswer.value = '';
-
+                
                 fetchComments();
                 loadCaptcha();
             } else {
