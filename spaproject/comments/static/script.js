@@ -16,8 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const socket = new WebSocket(
         window.location.protocol === 'https:' 
-            // ? 'wss://harmonious-rebirth-production.up.railway.app/ws/comments/'
-            ? 'wss://spa.up.railway.app/ws/comments/'        
+            ? (window.location.hostname === 'spa.up.railway.app'
+                ? 'wss://spa.up.railway.app/ws/comments/'
+                : 'wss://harmonious-rebirth-production.up.railway.app/ws/comments/'
+            )
             : 'ws://127.0.0.1:8000/ws/comments/'
     );
 
