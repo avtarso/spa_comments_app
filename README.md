@@ -49,7 +49,7 @@
 
 Запустите приложение
 
-    python manage.py runserver
+    daphne spaproject.asgi:application
 
 #### Теперь приложение из этого репозитория доступно по адресу http://127.0.0.1:8000/
 
@@ -63,7 +63,7 @@
     cd spaproject
     python manage.py makemigrations && python manage.py migrate
     kill -9 $(lsof -t -i:8000)
-    python manage.py runserver
+    daphne spaproject.asgi:application
 
 ### Последующие запуски
 
