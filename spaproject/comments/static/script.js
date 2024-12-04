@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = JSON.parse(event.data);
         const comment = data.message;
         const li = document.createElement('li');
-        li.textContent = `${comment.user_name} - ${comment.text}`;
+        li.innerHTML = `${comment.user_name} - ${comment.text}`;
         document.getElementById('comments').appendChild(li);
     };
 
