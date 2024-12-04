@@ -61,7 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
             comments.forEach(comment => {
                 const li = document.createElement('li');
                 // li.textContent = `${comment.user_name} - ${comment.text}`;
-                li.innerHTML = `${comment.user_name} - ${comment.text}`;
+                li.innerHTML = `
+                ${comment.user_name} - ${comment.text}
+                <div>
+                    <button onclick="likeComment(${comment.id})">👍</button>
+                    <span id="likes-count-${comment.id}">${comment.likes}</span>
+                    <button onclick="dislikeComment(${comment.id})">👎</button>
+                    <span id="dislikes-count-${comment.id}">${comment.dislikes}</span>
+                </div>
+            `;
                 commentsList.appendChild(li);
             });
         } catch (error) {
@@ -164,6 +172,43 @@ document.addEventListener('DOMContentLoaded', () => {
             captchaAnswer.value = '';
         }
     });
+
+
+    const likeComment = async (commentId) => {
+        try {
+            const response = await fetch('/api/comments/${commentId}/like/', {
+                method: 'POST',
+                headers: getHeadersWithCSRF(),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.querySelector('#likes-count-${commentId}').textContent = data.likes;
+            } else {
+                alert('Ошибка при отправке лайка');
+            }
+        } catch (error) {
+            alert('Не удалось отправить лайк');
+        }
+    };
+
+    const dislikeComment = async (commentId) => {
+        try {
+            const response = await fetch('/api/comments/${commentId}/dislike', {
+                method: 'POST',
+                headers: getHeadersWithCSRF(),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.querySelector('#dislike-count-${commentId}').text.Content = data.dislikes;
+            } else {
+                alert('Ошибка при отправке дизлайка');
+            }
+        } catch (error) {
+            alert('Не удалось отправить дизлайк')
+        }
+    };
+
+    const fetchComments 
 
     refreshCaptcha.addEventListener('click', loadCaptcha);
 

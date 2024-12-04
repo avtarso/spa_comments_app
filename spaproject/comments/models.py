@@ -20,5 +20,8 @@ class Comment(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
+
     def __str__(self):
         return self.text[:50] ## проверить как выглядит из админки

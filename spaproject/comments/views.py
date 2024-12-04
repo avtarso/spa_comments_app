@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -35,6 +35,22 @@ class CommentsListCreateView(APIView):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def like_comment(request, comment_id):
+    if request.method == 'POST':
+        comment = get_object_or_404(Comment, id=comment_id)
+        comment.likes +=1 
+        comment.save()
+        return JsonResponse({'likes': comment.likes})
+
+def dislike_comment(request, comment_id):
+    if request.method == 'POST':
+        commen = get_obgect_or_404(Comment, id=comment_id)
+        comment.dislikes -= 1
+        comment.save()
+        return JsonResponse({'dislikes': comment.dislikes})
+
 
 
 def index(request):
