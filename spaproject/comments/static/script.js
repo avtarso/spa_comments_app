@@ -97,25 +97,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const createCommentElement = (comment) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            ${comment.user_name} - ${comment.text}
+            <div>
+                <button class="like-button" data-comment-id="${comment.id}">👍</button>
+                <span id="likes-count-${comment.id}">${comment.likes}</span>
+                <button class="dislike-button" data-comment-id="${comment.id}">👎</button>
+                <span id="dislikes-count-${comment.id}">${comment.dislikes}</span>
+            </div>`;
+        return li;
+    };
+
     const fetchComments = async () => {
         try {
             const response = await fetch('/api/comments/');
             if (!response.ok) throw new Error('Ошибка при получении комментариев');
             const comments = await response.json();
             commentsList.innerHTML = '';
-            comments.forEach(comment => {
-                const li = document.createElement('li'); // #####
-                li.innerHTML = `
-                ${comment.user_name} - ${comment.text}
-                <div>
-                    <button class="like-button" data-comment-id="${comment.id}">👍</button>
-                    <span id="likes-count-${comment.id}">${comment.likes}</span>
-                    <button class="dislike-button" data-comment-id="${comment.id}">👎</button>
-                    <span id="dislikes-count-${comment.id}">${comment.dislikes}</span>
-                </div>
-                `;
-                commentsList.appendChild(li);
-            });
+            comments.forEach(comment => commentsList.appendChild(createCommentElement(comment)));
         } catch (error) {
             commentsList.innerHTML = '<li>Не удалось загрузить комментарии</li>';
         }
@@ -131,17 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         switch (data.type) {
             case "new_comment":
-                const comment = data.message;
-                const li = document.createElement('li');        // #####
-                li.innerHTML = `
-                ${comment.user_name} - ${comment.text}
-                <div>
-                    <button class="like-button" data-comment-id="${comment.id}">👍</button>
-                    <span id="likes-count-${comment.id}">${comment.likes}</span>
-                    <button class="dislike-button" data-comment-id="${comment.id}">👎</button>
-                    <span id="dislikes-count-${comment.id}">${comment.dislikes}</span>
-                </div>`;
-                document.getElementById('comments').appendChild(li);
+                document.getElementById('comments').appendChild(createCommentElement(data.message));
                 break;
 
             case "update_likes":
