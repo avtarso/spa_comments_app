@@ -20,11 +20,8 @@ class CommentsListCreateView(APIView):
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             comment = serializer.save()
-            message = {
-                'id': comment.id,
-                'user_name': comment.user_name,
-                'text': comment.text,
-            }
+            serializer.instance = comment # Указываем сериализатору, с каким экземпляром работать
+            message = serializer.html_representation()
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 'comments',
@@ -42,16 +39,40 @@ def like_comment(request, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
         comment.likes +=1 
         comment.save()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "comments",
+            {
+                "type": "update_likes",
+                "message": {
+                    "id": comment_id,
+                    "likes": comment.likes,
+                    "dislikes": comment.dislikes,
+                },
+            },
+        )
+
         return JsonResponse({'likes': comment.likes})
 
 def dislike_comment(request, comment_id):
     if request.method == 'POST':
-        commen = get_obgect_or_404(Comment, id=comment_id)
-        comment.dislikes -= 1
+        comment = get_object_or_404(Comment, id=comment_id)
+        comment.dislikes += 1
         comment.save()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "comments",
+            {
+                "type": "update_likes",
+                "message": {
+                    "id": comment_id,
+                    "likes": comment.likes,
+                    "dislikes": comment.dislikes,
+                },
+            },
+        )
+
         return JsonResponse({'dislikes': comment.dislikes})
-
-
 
 def index(request):
     return render(request, 'comments/index.html')

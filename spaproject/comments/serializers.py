@@ -20,3 +20,8 @@ class CommentSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['text'] = sanitize_html(representation['text'])
         return representation
+    
+    def html_representation(self):
+        representation = self.to_representation(self.instance)
+        excluded_fields = ['e_mail']  # Поля, которые нужно исключить
+        return {key: value for key, value in representation.items() if key not in excluded_fields}

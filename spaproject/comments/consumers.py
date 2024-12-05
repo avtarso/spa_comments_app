@@ -31,5 +31,14 @@ class CommentConsumer(AsyncWebsocketConsumer):
         message = event['message']
 
         await self.send(text_data=json.dumps({
+            'type': 'new_comment',
             'message': message
+        }))
+
+    async def update_likes(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "update_likes",
+            "id": event["message"]["id"],
+            "likes": event["message"]["likes"],
+            "dislikes": event["message"]["dislikes"]
         }))
