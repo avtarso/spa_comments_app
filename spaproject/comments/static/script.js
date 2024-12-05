@@ -52,37 +52,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const likeComment = async (commentId) => {
+    const updateReaction = async (commentId, action) => {
         try {
-            const response = await fetch(`/api/comments/${commentId}/like/`, {
+            const response = await fetch(`/api/comments/${commentId}/${action}/`, {
                 method: 'POST',
                 headers: getHeadersWithCSRF(),
             });
             if (response.ok) {
                 const data = await response.json();
-                document.querySelector(`#likes-count-${commentId}`).textContent = data.likes;
+                document.querySelector(`#${action}s-count-${commentId}`).textContent = data[action + 's'];
             } else {
-                alert('Ошибка при отправке лайка');
+                alert(`Ошибка при отправке ${action}`);
             }
         } catch (error) {
-            alert('Не удалось отправить лайк');
-        }
-    };
-
-    const dislikeComment = async (commentId) => {
-        try {
-            const response = await fetch(`/api/comments/${commentId}/dislike/`, {
-                method: 'POST',
-                headers: getHeadersWithCSRF(),
-            });
-            if (response.ok) {
-                const data = await response.json();
-                document.querySelector(`#dislikes-count-${commentId}`).textContent = data.dislikes;
-            } else {
-                alert('Ошибка при отправке дизлайка');
-            }
-        } catch (error) {
-            alert('Не удалось отправить дизлайк');
+            alert(`Не удалось отправить ${action}`);
         }
     };
 
@@ -90,9 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.tagName === 'BUTTON') {
             const commentId = event.target.dataset.commentId;
             if (event.target.classList.contains('like-button')) {
-                await likeComment(commentId);
+                await updateReaction(commentId, 'like');
             } else if (event.target.classList.contains('dislike-button')) {
-                await dislikeComment(commentId);
+                await updateReaction(commentId, 'dislike');
             }
         }
     });
