@@ -80,10 +80,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const format_date = (formated_date) => {
+        const createdAt = formated_date;
+        const date = new Date(createdAt);
+        const year = date.getFullYear();
+        const monfh = String(date.getMonth() + 1 ).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hour = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${year}-${monfh}-${day} ${hour}:${minutes}`;
+
+    }
+
     const createCommentElement = (comment) => {
         const li = document.createElement('li');
         li.innerHTML = `
-            ${comment.user_name} - ${comment.text}
+            <strong>${comment.user_name}</strong> <small>${format_date(comment.created_at)}</small> ${comment.text}
             <div>
                 <button class="like-button" data-comment-id="${comment.id}">👍</button>
                 <span id="likes-count-${comment.id}">${comment.likes}</span>
