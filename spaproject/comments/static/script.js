@@ -52,18 +52,67 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const updateReaction = async (commentId, action) => {
+        try {
+            const response = await fetch(`/api/comments/${commentId}/${action}/`, {
+                method: 'POST',
+                headers: getHeadersWithCSRF(),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.querySelector(`#${action}s-count-${commentId}`).textContent = data[action + 's'];
+            } else {
+                alert(`Ошибка при отправке ${action}`);
+            }
+        } catch (error) {
+            alert(`Не удалось отправить ${action}`);
+        }
+    };
+
+    commentsList.addEventListener('click', async (event) => {
+        if (event.target.tagName === 'BUTTON') {
+            const commentId = event.target.dataset.commentId;
+            if (event.target.classList.contains('like-button')) {
+                await updateReaction(commentId, 'like');
+            } else if (event.target.classList.contains('dislike-button')) {
+                await updateReaction(commentId, 'dislike');
+            }
+        }
+    });
+
+    const format_date = (formated_date) => {
+        const createdAt = formated_date;
+        const date = new Date(createdAt);
+        const year = date.getFullYear();
+        const monfh = String(date.getMonth() + 1 ).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hour = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${year}-${monfh}-${day} ${hour}:${minutes}`;
+
+    }
+
+    const createCommentElement = (comment) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <strong>${comment.user_name}</strong> <small>${format_date(comment.created_at)}</small> ${comment.text}
+            <div>
+                <button class="like-button" data-comment-id="${comment.id}">👍</button>
+                <span id="likes-count-${comment.id}">${comment.likes}</span>
+                <button class="dislike-button" data-comment-id="${comment.id}">👎</button>
+                <span id="dislikes-count-${comment.id}">${comment.dislikes}</span>
+            </div>`;
+        return li;
+    };
+
     const fetchComments = async () => {
         try {
             const response = await fetch('/api/comments/');
             if (!response.ok) throw new Error('Ошибка при получении комментариев');
             const comments = await response.json();
             commentsList.innerHTML = '';
-            comments.forEach(comment => {
-                const li = document.createElement('li');
-                // li.textContent = `${comment.user_name} - ${comment.text}`;
-                li.innerHTML = `${comment.user_name} - ${comment.text}`;
-                commentsList.appendChild(li);
-            });
+            comments.forEach(comment => commentsList.appendChild(createCommentElement(comment)));
         } catch (error) {
             commentsList.innerHTML = '<li>Не удалось загрузить комментарии</li>';
         }
@@ -74,13 +123,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     socket.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-        const comment = data.message;
-        const li = document.createElement('li');
-        li.innerHTML = `${comment.user_name} - ${comment.text}`;
-        document.getElementById('comments').appendChild(li);
-    };
 
+        const data = JSON.parse(event.data);
+
+        switch (data.type) {
+            case "new_comment":
+                document.getElementById('comments').appendChild(createCommentElement(data.message));
+                break;
+
+            case "update_likes":
+                const likesElement = document.querySelector(`#likes-count-${data.id}`);
+                const dislikesElement = document.querySelector(`#dislikes-count-${data.id}`);
+                if (likesElement) likesElement.textContent = data.likes;
+                if (dislikesElement) dislikesElement.textContent = data.dislikes;
+                break;
+
+            default:
+                console.warn("Неизвестный тип сообщения:", data.type);
+        }
+    };
 
     commentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -135,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
+
                 commentUser_name.value = '';
                 commentE_mail.value = '';
                 commentHome_page.value = '';
@@ -142,12 +204,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 quill.root.innerHTML = '';
                 captchaAnswer.value = '';
                 
-                fetchComments();
                 loadCaptcha();
             } else {
-                // Обработка ошибок от сервера
                 const errorData = await response.json();
-                // console.log(errorData);
                 if (errorData && typeof errorData === 'object') {
                     const errorMessages = Object.entries(errorData)
                         .map(([field, messages]) => `${messages.join(', ')}`)

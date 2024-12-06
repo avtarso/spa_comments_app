@@ -33,6 +33,11 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://harmonious-rebirth-production.up.railway.app",
+    "https://spa.up.railway.app",
+    "http://127.0.0.1",
+]
 
 # Application definition
 
