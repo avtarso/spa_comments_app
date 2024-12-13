@@ -7,9 +7,9 @@
 
 Откройте новое окно терминала
 
-Создайте новый отдельный каталог (например, projects_from_github)
+Создайте новый отдельный каталог, если каталог еще не создан (например, projects_from_github)
 
-    mkdir projects_from_github
+    mkdir -p projects_from_github
   
 Перейдите в новый отдельный каталог
 
@@ -55,7 +55,7 @@
 
 Все вышеперечисленные операции можно выполнить одной серией команд:
 
-    mkdir projects_from_github && cd projects_from_github
+    mkdir -p projects_from_github && cd projects_from_github
     git clone https://github.com/avtarso/spa_comments_app
     cd spa_comments_app
     python3 -m venv spa && source spa/bin/activate
