@@ -39,6 +39,23 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1",
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "https://vue.up.railway.app"
+]
+
+# Разрешает клиенту отправлять определённые заголовки в запросах.
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'captcha-key',
+]
+
+# Позволяет клиенту видеть и считывать определённые заголовки в ответах от сервера.
+CORS_EXPOSE_HEADERS = [
+    'Captcha-Key',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,6 +68,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "comments",
     "channels",
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +80,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "spaproject.urls"
