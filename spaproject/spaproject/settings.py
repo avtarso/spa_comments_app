@@ -37,6 +37,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://harmonious-rebirth-production.up.railway.app",
     "https://spa.up.railway.app",
     "http://127.0.0.1",
+    "http://localhost"
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -45,10 +46,21 @@ CORS_ALLOWED_ORIGINS = [
     "https://vue.up.railway.app"
 ]
 
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "OPTIONS",
+]
+
 # Разрешает клиенту отправлять определённые заголовки в запросах.
 CORS_ALLOW_HEADERS = [
     'content-type',
     'captcha-key',
+    'x-csrftoken',
+    'authorization',
+    'accept',
 ]
 
 # Позволяет клиенту видеть и считывать определённые заголовки в ответах от сервера.
