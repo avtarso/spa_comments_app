@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         placeholder: 'Write your comment...',
         modules: {
             toolbar: [
-                ['link', 'code', 'italic', 'bold']
+                ['bold', 'italic', 'code', 'link']
             ]
         }
     });
