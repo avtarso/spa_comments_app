@@ -43,7 +43,10 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
-    "https://vue.up.railway.app"
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://vue.up.railway.app",
+    "https://vue-branch.up.railway.app"
 ]
 
 CORS_ALLOW_METHODS = [
